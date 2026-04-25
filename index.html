@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AsesoCont">
+<title>AsesoCont</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A1628;--surf:#111E35;--surf2:#172440;--surf3:#1E2E4A;--bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.15);--tx:#F0F4FF;--tx2:#8A9BB5;--tx3:#4A5A72;--green:#00D4A0;--gbg:rgba(0,212,160,0.12);--amber:#FFB547;--abg:rgba(255,181,71,0.12);--red:#FF6B6B;--rbg:rgba(255,107,107,0.12);--blue:#4D9CFF;--bbg:rgba(77,156,255,0.12);--purple:#B47AFF;--pbg:rgba(180,122,255,0.12);--r:16px;--rsm:10px;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);color:var(--tx);}
+#app{height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;}
+.scr{flex:1;overflow-y:auto;padding-bottom:90px;display:none;}
+.scr.on{display:block;}
+.scr::-webkit-scrollbar{display:none;}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surf);border-top:1px solid var(--bd);display:flex;padding:8px 0 20px;z-index:100;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
+.ni-icon{font-size:18px;transition:transform 0.2s;}
+.ni-lbl{font-size:9px;color:var(--tx3);font-weight:500;letter-spacing:0.3px;}
+.ni.on .ni-lbl{color:var(--green);}
+.ni.on .ni-icon{transform:scale(1.15);}
+.ph{padding:52px 20px 16px;}
+.ph h1{font-size:24px;font-weight:600;letter-spacing:-0.5px;}
+.ph p{font-size:13px;color:var(--tx2);margin-top:3px;}
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin:0 16px 10px;cursor:pointer;transition:transform 0.15s;}
+.card:active{transform:scale(0.98);}
+.card.static{cursor:default;}
+.card.static:active{transform:none;}
+.ct{display:flex;align-items:center;gap:12px;}
+.av{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;flex-shrink:0;font-family:var(--mono);}
+.ci{flex:1;min-width:0;}
+.cn{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cs{font-size:11px;color:var(--tx2);font-family:var(--mono);margin-top:2px;}
+.sem{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sem.g{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sem.a{background:var(--amber);box-shadow:0 0 6px var(--amber);}
+.sem.r{background:var(--red);box-shadow:0 0 6px var(--red);}
+.tags{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.tag{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:500;}
+.tag.b{background:var(--bbg);color:var(--blue);}
+.tag.g{background:var(--gbg);color:var(--green);}
+.tag.a{background:var(--abg);color:var(--amber);}
+.tag.r{background:var(--rbg);color:var(--red);}
+.tag.p{background:var(--pbg);color:var(--purple);}
+.vr{display:flex;align-items:center;gap:12px;padding:12px 16px;margin:0 16px 8px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rsm);cursor:pointer;}
+.vr:active{transform:scale(0.98);}
+.vd{font-family:var(--mono);font-size:11px;color:var(--tx2);min-width:46px;text-align:center;background:var(--surf2);padding:4px 5px;border-radius:8px;line-height:1.4;}
+.vd span{display:block;font-size:17px;font-weight:500;color:var(--tx);}
+.vi{flex:1;}
+.ve{font-size:13px;font-weight:500;}
+.vt{font-size:11px;color:var(--tx2);margin-top:2px;}
+.vb{font-size:10px;padding:4px 8px;border-radius:99px;font-weight:600;white-space:nowrap;}
+.fab{position:fixed;bottom:96px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--green);border:none;display:none;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,212,160,0.4);z-index:99;color:#0A1628;font-weight:700;}
+.fab:active{transform:scale(0.92);}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;align-items:flex-end;backdrop-filter:blur(4px);}
+.ov.on{display:flex;}
+.modal{background:var(--surf);border-radius:24px 24px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:20px 20px 44px;animation:su 0.3s ease;}
+.modal::-webkit-scrollbar{display:none;}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mh{width:36px;height:4px;background:var(--bd2);border-radius:99px;margin:0 auto 20px;}
+.mt{font-size:18px;font-weight:600;margin-bottom:6px;}
+.ms{font-size:12px;color:var(--tx2);margin-bottom:20px;line-height:1.5;}
+.fg{margin-bottom:14px;}
+.fl{font-size:11px;color:var(--tx2);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:5px;display:block;}
+.fi,.fsel,.fta{width:100%;background:var(--surf2);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px 14px;font-size:14px;color:var(--tx);font-family:var(--font);outline:none;-webkit-appearance:none;}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--green);}
+.fsel option{background:var(--surf2);}
+.fta{resize:none;min-height:72px;line-height:1.5;}
+.fhint{font-size:11px;color:var(--tx3);margin-top:5px;line-height:1.5;}
+.fhint.warn{color:var(--amber);background:var(--abg);padding:8px 10px;border-radius:8px;}
+.tsel{display:flex;gap:6px;flex-wrap:wrap;}
+.tb{flex:1;min-width:55px;padding:10px 6px;border-radius:var(--rsm);border:1.5px solid var(--bd);background:transparent;color:var(--tx2);font-size:12px;font-weight:500;cursor:pointer;text-align:center;font-family:var(--font);transition:all 0.2s;}
+.tb.on{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.btn{width:100%;padding:14px;border-radius:var(--rsm);border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);}
+.btn:active{opacity:0.85;}
+.btnp{background:var(--green);color:#0A1628;}
+.btns{background:var(--surf2);color:var(--tx);border:1px solid var(--bd);margin-top:10px;}
+.btnd{background:var(--rbg);color:var(--red);border:1px solid rgba(255,107,107,0.2);margin-top:10px;}
+.pbg{background:var(--surf2);border-radius:99px;height:5px;}
+.pfill{height:5px;border-radius:99px;transition:width 0.4s;}
+.tabs{display:flex;background:var(--surf2);border-radius:var(--rsm);padding:3px;margin:0 16px 14px;}
+.tab{flex:1;text-align:center;padding:8px 4px;font-size:11px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--tx2);}
+.tab.on{background:var(--surf);color:var(--tx);}
+.srow{display:flex;gap:8px;padding:0 16px 12px;}
+.sbox{flex:1;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px;text-align:center;}
+.snum{font-size:22px;font-weight:600;font-family:var(--mono);}
+.slbl{font-size:10px;color:var(--tx2);margin-top:2px;}
+.slabel{font-size:11px;color:var(--tx3);font-weight:500;letter-spacing:0.8px;text-transform:uppercase;padding:4px 16px 8px;}
+.cls{margin-bottom:16px;}
+.clst{font-size:11px;color:var(--tx2);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;}
+.cli{margin-bottom:5px;}
+.clh{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--surf2);border-radius:var(--rsm);cursor:pointer;}
+.clh:active{background:var(--surf3);}
+.cb{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--bd2);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.cb.on{background:var(--green);border-color:var(--green);}
+.cb.on::after{content:'✓';color:#0A1628;font-size:13px;font-weight:700;}
+.clt{flex:1;font-size:13px;line-height:1.4;}
+.clt.done{color:var(--tx3);text-decoration:line-through;}
+.cldet{display:none;background:var(--surf3);border-radius:0 0 var(--rsm) var(--rsm);padding:10px 12px;border-top:1px solid var(--bd);}
+.cldet.on{display:block;}
+.cldet p{font-size:12px;color:var(--tx2);line-height:1.6;}
+.cldet strong{color:var(--amber);}
+.infobtn{font-size:11px;color:var(--tx3);background:var(--surf3);border-radius:6px;padding:2px 7px;flex-shrink:0;}
+.swrap{padding:0 16px 10px;}
+.sinp{width:100%;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rsm);padding:11px 14px 11px 36px;font-size:14px;color:var(--tx);font-family:var(--font);outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='%238A9BB5' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:11px center;}
+.empty{text-align:center;padding:60px 20px;}
+.empty .eico{font-size:46px;margin-bottom:14px;}
+.empty .et{font-size:15px;font-weight:500;margin-bottom:8px;}
+.empty .es{font-size:13px;color:var(--tx2);line-height:1.6;}
+.back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--green);cursor:pointer;padding:52px 20px 0;}
+.back span{font-size:20px;}
+.pagor{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--surf2);border-radius:var(--rsm);margin-bottom:6px;cursor:pointer;}
+.pagor:active{background:var(--surf3);}
+.pagoc{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--bd2);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.pagoc.paid{background:var(--green);border-color:var(--green);}
+.pagoc.paid::after{content:'✓';color:#0A1628;font-size:13px;font-weight:700;}
+.pagoi{flex:1;}
+.pagol{font-size:13px;font-weight:500;}
+.pagos{font-size:11px;color:var(--tx2);margin-top:2px;}
+.nrow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);}
+.nrow:last-child{border-bottom:none;}
+.nl{font-size:13px;color:var(--tx2);}
+.nv{font-size:13px;font-weight:500;font-family:var(--mono);}
+.nv.pos{color:var(--green);}
+.nv.neg{color:var(--red);}
+.certprev{background:white;color:#1a1a2e;border-radius:var(--r);padding:20px;margin-top:14px;font-family:Georgia,serif;}
+.certh{text-align:center;margin-bottom:14px;}
+.certt{font-size:14px;font-weight:700;letter-spacing:1px;}
+.certs{font-size:11px;color:#666;margin-top:3px;}
+.certb{font-size:12px;line-height:1.8;color:#333;}
+.certb strong{color:#1a1a2e;}
+.certf{margin-top:24px;border-top:1px solid #ddd;padding-top:12px;font-size:11px;color:#666;}
+.ibox{background:var(--bbg);border:1px solid rgba(77,156,255,0.2);border-radius:var(--rsm);padding:10px 12px;margin-bottom:14px;}
+.ibox p{font-size:12px;color:var(--blue);line-height:1.6;}
+.wbox{background:var(--abg);border:1px solid rgba(255,181,71,0.2);border-radius:var(--rsm);padding:10px 12px;margin-bottom:14px;}
+.wbox p{font-size:12px;color:var(--amber);line-height:1.6;}
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:150;display:none;align-items:flex-end;backdrop-filter:blur(4px);}
+.menu-overlay.on{display:flex;}
+.menu-panel{background:var(--surf);border-radius:24px 24px 0 0;width:100%;padding:20px 20px 40px;animation:su 0.3s ease;}
+.menu-handle{width:36px;height:4px;background:var(--bd2);border-radius:99px;margin:0 auto 20px;}
+.menu-title{font-size:18px;font-weight:600;margin-bottom:16px;}
+.menu-item{padding:14px 16px;background:var(--surf2);border-radius:var(--rsm);margin-bottom:8px;font-size:14px;font-weight:500;cursor:pointer;}
+.menu-item:active{background:var(--surf3);}
+.year-sel{display:flex;gap:6px;padding:0 16px 10px;}
+.year-btn{flex:1;padding:8px;background:var(--surf2);border:1px solid var(--bd);border-radius:var(--rsm);font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;text-align:center;}
+.year-btn.on{background:var(--green);color:#0A1628;border-color:var(--green);}
+.pend-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tx2);margin-top:6px;}
+.pend-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.acc-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surf2);border-radius:var(--rsm);cursor:pointer;margin:0 16px 8px;}
+.acc-header:active{background:var(--surf3);}
+.acc-title{font-size:13px;font-weight:600;}
+.acc-arrow{font-size:12px;transition:transform 0.2s;color:var(--tx3);}
+.acc-arrow.open{transform:rotate(90deg);}
+.acc-body{display:none;padding:0 16px 12px;}
+.acc-body.on{display:block;}
+.code-block{background:var(--surf3);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px;font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--tx2);margin:8px 0;overflow-x:auto;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="s-home" class="scr on"></div>
+  <div id="s-empresas" class="scr"></div>
+  <div id="s-personas" class="scr"></div>
+  <div id="s-nomina" class="scr"></div>
+  <div id="s-certs" class="scr"></div>
+  <div id="s-renta" class="scr"></div>
+  <div id="s-et" class="scr"></div>
+  <div id="s-exog" class="scr"></div>
+  <div id="s-det-emp" class="scr"></div>
+  <div id="s-det-per" class="scr"></div>
+
+  <nav class="bnav">
+    <div class="ni on" id="ni-home" onclick="nav('home')"><div class="ni-icon">⊞</div><div class="ni-lbl">Inicio</div></div>
+    <div class="ni" id="ni-empresas" onclick="nav('empresas')"><div class="ni-icon">🏢</div><div class="ni-lbl">Empresas</div></div>
+    <div class="ni" id="ni-personas" onclick="nav('personas')"><div class="ni-icon">👤</div><div class="ni-lbl">Personas</div></div>
+    <div class="ni" id="ni-nomina" onclick="nav('nomina')"><div class="ni-icon">💰</div><div class="ni-lbl">Nómina</div></div>
+    <div class="ni" id="ni-menu" onclick="toggleMenu()"><div class="ni-icon">⋮</div><div class="ni-lbl">Más</div></div>
+  </nav>
+
+  <div class="menu-overlay" id="menu-ov" onclick="if(event.target===this)closeMenu()"><div class="menu-panel">
+    <div class="menu-handle"></div>
+    <div class="menu-title">Más herramientas</div>
+    <div class="menu-item" onclick="nav('certs');closeMenu()">📄 Certificaciones</div>
+    <div class="menu-item" onclick="nav('renta');closeMenu()">🧾 Guía Renta 2026</div>
+    <div class="menu-item" onclick="nav('et');closeMenu()">📖 Estatuto Tributario</div>
+    <div class="menu-item" onclick="nav('exog');closeMenu()">📊 Info. Exógena</div>
+  </div></div>
+
+  <button class="fab" id="fab" onclick="fabAction()">+</button>
+
+  <div class="ov" id="ov-emp"><div class="modal" id="modal-emp"></div></div>
+  <div class="ov" id="ov-per"><div class="modal" id="modal-per"></div></div>
+  <div class="ov" id="ov-pago"><div class="modal" id="modal-pago"></div></div>
+</div>
+
+<script>
+// ===== BASE DE DATOS Y ESTADO =====
+var DB = { empresas:[], personas:[] };
+var P = { et:'SAS', ee:'no', pt:'asalariado', npmodo:'mensual', naux:'si', ct:'emp', yearSel:2026 };
+var C = { scr:'home', prev:'home', eid:null, pid:null, tab:'cl', pagoKey:null };
+
+function dbSave(){ try{ localStorage.setItem('ac4', JSON.stringify(DB)); }catch(e){} }
+function dbLoad(){ try{ var s=localStorage.getItem('ac4'); if(s) DB=JSON.parse(s); }catch(e){} }
+
+function pick(btn, key, val){
+  P[key]=val;
+  btn.closest('.tsel').querySelectorAll('.tb').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+function openOv(id){ document.getElementById(id).classList.add('on'); }
+function closeOv(id){ document.getElementById(id).classList.remove('on'); }
+document.querySelectorAll('.ov').forEach(function(el){
+  el.addEventListener('click', function(e){ if(e.target===el) el.classList.remove('on'); });
+});
+
+// ===== NAVEGACIÓN =====
+var ROOT = ['home','empresas','personas','nomina','certs','renta','et','exog'];
+function nav(s){
+  if(ROOT.indexOf(s)>=0) C.prev=C.scr;
+  document.querySelectorAll('.scr').forEach(function(x){ x.classList.remove('on'); });
+  document.getElementById('s-'+s).classList.add('on');
+  document.querySelectorAll('.ni').forEach(function(x){ x.classList.remove('on'); });
+  var nmap = {home:'home',empresas:'empresas',personas:'personas',nomina:'nomina'};
+  if(nmap[s]) document.getElementById('ni-'+nmap[s]).classList.add('on');
+  C.scr = s;
+  var fab = document.getElementById('fab');
+  fab.style.display = (s==='empresas'||s==='personas') ? 'flex' : 'none';
+  var renders = {
+    home: renderHome,
+    empresas: renderEmpresas,
+    personas: renderPersonas,
+    nomina: renderNomina,
+    certs: renderCerts,
+    renta: renderRenta,
+    et: renderET,
+    exog: renderExog,
+    'det-emp': renderDetEmp,
+    'det-per': renderDetPer
+  };
+  if(renders[s]) renders[s]();
+}
+function goBack(){ nav(C.prev); }
+function fabAction(){
+  if(C.scr==='empresas') openModalEmpresa();
+  else if(C.scr==='personas') openModalPersona();
+}
+function toggleMenu(){ document.getElementById('menu-ov').classList.toggle('on'); }
+function closeMenu(){ document.getElementById('menu-ov').classList.remove('on'); }
+
+// ===== CONSTANTES 2026 =====
+var MCA=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+var MCL=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+var MDS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+var SMMLV=1750905;
+var AUX_TRANS=249095;
+var UVT=52374;
+
+// ===== VENCIMIENTOS DIAN (últimos 3 años) =====
+var VENC = {
+  iva_bi_2024:[
+    {f:'2024-03-15',l:'IVA Bim Ene-Feb 2024'},{f:'2024-05-15',l:'IVA Bim Mar-Abr 2024'},
+    {f:'2024-07-15',l:'IVA Bim May-Jun 2024'},{f:'2024-09-13',l:'IVA Bim Jul-Ago 2024'},
+    {f:'2024-11-15',l:'IVA Bim Sep-Oct 2024'},{f:'2025-01-17',l:'IVA Bim Nov-Dic 2024'},
+  ],
+  iva_bi_2025:[
+    {f:'2025-03-14',l:'IVA Bim Ene-Feb 2025'},{f:'2025-05-15',l:'IVA Bim Mar-Abr 2025'},
+    {f:'2025-07-15',l:'IVA Bim May-Jun 2025'},{f:'2025-09-12',l:'IVA Bim Jul-Ago 2025'},
+    {f:'2025-11-14',l:'IVA Bim Sep-Oct 2025'},{f:'2026-01-16',l:'IVA Bim Nov-Dic 2025'},
+  ],
+  iva_bi_2026:[
+    {f:'2026-03-13',l:'IVA Bim Ene-Feb 2026'},{f:'2026-05-15',l:'IVA Bim Mar-Abr 2026'},
+    {f:'2026-07-15',l:'IVA Bim May-Jun 2026'},{f:'2026-09-11',l:'IVA Bim Jul-Ago 2026'},
+    {f:'2026-11-13',l:'IVA Bim Sep-Oct 2026'},
+  ],
+  iva_cuat_2024:[
+    {f:'2024-05-15',l:'IVA Cuat Ene-Abr 2024'},{f:'2024-09-13',l:'IVA Cuat May-Ago 2024'},
+    {f:'2025-01-17',l:'IVA Cuat Sep-Dic 2024'},
+  ],
+  iva_cuat_2025:[
+    {f:'2025-05-15',l:'IVA Cuat Ene-Abr 2025'},{f:'2025-09-12',l:'IVA Cuat May-Ago 2025'},
+    {f:'2026-01-16',l:'IVA Cuat Sep-Dic 2025'},
+  ],
+  iva_cuat_2026:[
+    {f:'2026-05-15',l:'IVA Cuat Ene-Abr 2026'},{f:'2026-09-11',l:'IVA Cuat May-Ago 2026'},
+  ],
+  iva_anual_2024:[{f:'2025-01-17',l:'IVA Anual 2024'}],
+  iva_anual_2025:[{f:'2026-01-16',l:'IVA Anual 2025'}],
+  iva_anual_2026:[{f:'2027-01-15',l:'IVA Anual 2026'}],
+  rete_2024:[
+    {f:'2024-04-22',l:'Retención Mar 2024'},{f:'2024-05-23',l:'Retención Abr 2024'},
+    {f:'2024-06-21',l:'Retención May 2024'},{f:'2024-07-19',l:'Retención Jun 2024'},
+    {f:'2024-08-23',l:'Retención Jul 2024'},{f:'2024-09-20',l:'Retención Ago 2024'},
+    {f:'2024-10-18',l:'Retención Sep 2024'},{f:'2024-11-22',l:'Retención Oct 2024'},
+    {f:'2024-12-20',l:'Retención Nov 2024'},{f:'2025-01-24',l:'Retención Dic 2024'},
+  ],
+  rete_2025:[
+    {f:'2025-02-21',l:'Retención Ene 2025'},{f:'2025-03-21',l:'Retención Feb 2025'},
+    {f:'2025-04-22',l:'Retención Mar 2025'},{f:'2025-05-23',l:'Retención Abr 2025'},
+    {f:'2025-06-20',l:'Retención May 2025'},{f:'2025-07-18',l:'Retención Jun 2025'},
+    {f:'2025-08-22',l:'Retención Jul 2025'},{f:'2025-09-19',l:'Retención Ago 2025'},
+    {f:'2025-10-17',l:'Retención Sep 2025'},{f:'2025-11-21',l:'Retención Oct 2025'},
+    {f:'2025-12-19',l:'Retención Nov 2025'},{f:'2026-01-23',l:'Retención Dic 2025'},
+  ],
+  rete_2026:[
+    {f:'2026-02-20',l:'Retención Ene 2026'},{f:'2026-03-20',l:'Retención Feb 2026'},
+    {f:'2026-04-24',l:'Retención Mar 2026'},{f:'2026-05-22',l:'Retención Abr 2026'},
+    {f:'2026-06-19',l:'Retención May 2026'},{f:'2026-07-17',l:'Retención Jun 2026'},
+    {f:'2026-08-21',l:'Retención Jul 2026'},{f:'2026-09-18',l:'Retención Ago 2026'},
+    {f:'2026-10-16',l:'Retención Sep 2026'},{f:'2026-11-20',l:'Retención Oct 2026'},
+  ],
+  renta_emp_2024:[{f:'2025-04-14',l:'Renta Emp 2024'}],
+  renta_emp_2025:[{f:'2026-04-13',l:'Renta Emp 2025'}],
+  renta_pn_2024:[{f:'2025-08-12',l:'Renta PN 2024'}],
+  renta_pn_2025:[{f:'2026-08-11',l:'Renta PN 2025'}],
+  pila_2024:[
+    {f:'2024-04-12',l:'PILA Mar 2024'},{f:'2024-05-15',l:'PILA Abr 2024'},
+    {f:'2024-06-14',l:'PILA May 2024'},{f:'2024-07-12',l:'PILA Jun 2024'},
+    {f:'2024-08-15',l:'PILA Jul 2024'},{f:'2024-09-13',l:'PILA Ago 2024'},
+    {f:'2024-10-11',l:'PILA Sep 2024'},{f:'2024-11-15',l:'PILA Oct 2024'},
+    {f:'2024-12-13',l:'PILA Nov 2024'},{f:'2025-01-17',l:'PILA Dic 2024'},
+  ],
+  pila_2025:[
+    {f:'2025-02-14',l:'PILA Ene 2025'},{f:'2025-03-14',l:'PILA Feb 2025'},
+    {f:'2025-04-14',l:'PILA Mar 2025'},{f:'2025-05-14',l:'PILA Abr 2025'},
+    {f:'2025-06-13',l:'PILA May 2025'},{f:'2025-07-14',l:'PILA Jun 2025'},
+    {f:'2025-08-14',l:'PILA Jul 2025'},{f:'2025-09-12',l:'PILA Ago 2025'},
+    {f:'2025-10-14',l:'PILA Sep 2025'},{f:'2025-11-14',l:'PILA Oct 2025'},
+    {f:'2025-12-12',l:'PILA Nov 2025'},{f:'2026-01-14',l:'PILA Dic 2025'},
+  ],
+  pila_2026:[
+    {f:'2026-02-13',l:'PILA Ene 2026'},{f:'2026-03-13',l:'PILA Feb 2026'},
+    {f:'2026-04-14',l:'PILA Mar 2026'},{f:'2026-05-14',l:'PILA Abr 2026'},
+    {f:'2026-06-12',l:'PILA May 2026'},{f:'2026-07-14',l:'PILA Jun 2026'},
+    {f:'2026-08-14',l:'PILA Jul 2026'},{f:'2026-09-11',l:'PILA Ago 2026'},
+    {f:'2026-10-14',l:'PILA Sep 2026'},{f:'2026-11-13',l:'PILA Oct 2026'},
+  ],
+};
+
+function vencEmpYear(e, year){
+  var arr=[]; var r=e.reg||'';
+  var tipos=[];
+  if(r==='bi') tipos.push('iva_bi_'+year);
+  else if(r==='cuat') tipos.push('iva_cuat_'+year);
+  else if(r==='anual') tipos.push('iva_anual_'+year);
+  if(r!=='simple') tipos.push('rete_'+year);
+  tipos.push('renta_emp_'+year);
+  if(e.emp==='si') tipos.push('pila_'+year);
+  tipos.forEach(function(t){
+    (VENC[t]||[]).forEach(function(v){ arr.push({f:v.f,l:v.l,tipo:t,eid:e.id,nom:e.nom,year:year}); });
+  });
+  return arr.sort(function(a,b){ return new Date(a.f)-new Date(b.f); });
+}
+
+function vencEmp(e){
+  var hoy=new Date(); var arr=[];
+  [2024,2025,2026].forEach(function(y){
+    vencEmpYear(e,y).forEach(function(v){ if(new Date(v.f)>=hoy) arr.push(v); });
+  });
+  return arr.sort(function(a,b){ return new Date(a.f)-new Date(b.f); });
+}
+
+function allVenc(){
+  var hoy=new Date(); var arr=[];
+  DB.empresas.forEach(function(e){ vencEmp(e).forEach(function(v){ arr.push(v); }); });
+  DB.personas.forEach(function(p){
+    [2024,2025,2026].forEach(function(y){
+      (VENC['renta_pn_'+y]||[]).forEach(function(v){
+        if(new Date(v.f)>=hoy) arr.push({f:v.f,l:v.l,tipo:'renta_pn',eid:null,pid:p.id,nom:p.nom,year:y});
+      });
+    });
+  });
+  return arr.sort(function(a,b){ return new Date(a.f)-new Date(b.f); });
+}
+
+function dias(f){ var h=new Date();h.setHours(0,0,0,0);var d=new Date(f);d.setHours(0,0,0,0);return Math.round((d-h)/86400000); }
+function colorD(d){ return d<=7?'red':d<=20?'amber':'green'; }
+function lblD(d){ if(d<0)return 'Vencida';if(d===0)return '¡Hoy!';if(d===1)return 'Mañana';return d+' días'; }
+function fmtNum(n){ return Math.round(n).toLocaleString('es-CO'); }
+
+function vrHTML(v){
+  var d=new Date(v.f); var ds=dias(v.f); var col=colorD(ds);
+  var eid=v.eid||''; var pid=v.pid||'';
+  return '<div class="vr" onclick="openFromVenc(\''+eid+'\',\''+pid+'\')"><div class="vd"><span>'+d.getDate()+'</span>'+MCA[d.getMonth()]+' '+d.getFullYear()+'</div><div class="vi"><div class="ve">'+v.nom+'</div><div class="vt">'+v.l+'</div></div><div class="vb" style="background:var(--'+col+'bg);color:var(--'+col+')">'+lblD(ds)+'</div></div>';
+}
+
+function openFromVenc(eid,pid){
+  if(eid){ C.eid=eid; C.prev=C.scr; nav('det-emp'); }
+  else if(pid){ C.pid=pid; C.prev=C.scr; nav('det-per'); }
+}
+
+// ===== UTILIDADES =====
+var COLORS=['#00D4A0','#4D9CFF','#FFB547','#FF6B6B','#B47AFF'];
+function avColor(n){ return COLORS[n.charCodeAt(0)%COLORS.length]; }
+function avInitials(n){ return n.split(' ').slice(0,2).map(function(w){ return w[0]; }).join('').toUpperCase(); }
+function g(id){ var el=document.getElementById(id); return el?el.value:''; }
+
+// ===== CHECKLIST EMPRESA =====
+var CL_EMP=[
+  {s:'Información General',items:[
+    {id:'rut',l:'RUT actualizado',d:'Verifica que la actividad económica (CIIU) y la dirección estén correctas. El RUT desactualizado puede generar sanciones DIAN.'},
+    {id:'camara',l:'Cámara de Comercio reciente',d:'Debe tener menos de 30 días para trámites bancarios. Confirma el objeto social y el representante legal vigente.'},
+    {id:'ciiu',l:'Actividad económica (CIIU)',d:'El CIIU determina la tarifa de retención aplicable y la tarifa de ICA. Imprescindible tenerlo claro.'},
+    {id:'mun',l:'Municipio confirmado para ICA',d:'El ICA varía por municipio. Confirma dónde opera para saber la tarifa correcta.'},
+  ]},
+  {s:'Software y Contabilidad',items:[
+    {id:'sw',l:'¿Qué software contable usa?',d:'Siigo, World Office, Alegra, Contapyme o Excel. Define cómo recibirás la información.'},
+    {id:'acc',l:'Acceso al software',d:'Solicita acceso con perfil de contador. Si hay contador anterior, pide que transfieran el acceso.'},
+    {id:'fe',l:'Proveedor facturación electrónica',d:'Verifica que tenga habilitador de FE activo ante la DIAN.'},
+    {id:'bal',l:'Últimos estados financieros',d:'Balance de prueba del último período cerrado. Necesario para conocer la situación real.'},
+    {id:'rez',l:'¿Contabilidad al día o con rezago?',d:'Define desde qué fecha asumes. Si hay rezago, cuantifica meses y considera honorario adicional.'},
+  ]},
+  {s:'Cuentas por Pagar y Cobrar',items:[
+    {id:'cp',l:'Listado cuentas por pagar',d:'Proveedores con saldos pendientes. No asumas sin conocer las deudas existentes.'},
+    {id:'cc',l:'Cartera de clientes',d:'Facturas pendientes. Identifica cartera vencida y riesgo de incobrables.'},
+    {id:'bank',l:'Extractos bancarios últimos 3 meses',d:'Necesario para conciliación. Pide acceso digital si es posible.'},
+    {id:'of',l:'Créditos y obligaciones financieras',d:'Créditos, leasing o fiducias. Solicita estado de cuenta con saldo y vencimiento.'},
+  ]},
+  {s:'Nómina y Seguridad Social',items:[
+    {id:'nom',l:'Nómina último mes',d:'Liquidación del último mes con todos los conceptos.'},
+    {id:'pila',l:'PILA al día',d:'Verifica salud, pensión, ARL, caja y parafiscales. Deudas en PILA pueden bloquearte con DIAN.'},
+    {id:'cont',l:'Contratos vigentes de empleados',d:'Tipo de contrato, salario y fecha de inicio. Clave para provisiones.'},
+  ]},
+  {s:'Obligaciones Tributarias',items:[
+    {id:'diva',l:'Últimas declaraciones de IVA',d:'Pide las 3 últimas. Verifica que estén presentadas Y pagadas.'},
+    {id:'drete',l:'Últimas retenciones',d:'Presentación mensual. Retención sin pagar genera sanción del 5% mensual.'},
+    {id:'drenta',l:'Última declaración de renta',d:'Verifica si fue con saldo a pagar, si se pagó, y si hay correcciones pendientes.'},
+    {id:'dian',l:'Deudas o requerimientos DIAN',d:'Pregunta directamente. Esto define el alcance de tu trabajo y los riesgos.'},
+  ]},
+];
+
+// ===== CHECKLIST PERSONA NATURAL =====
+var CL_PN = {
+  asalariado:[
+    {s:'Ingresos',items:[
+      {id:'ci',l:'Certificado ingresos y retenciones',d:'Formato DIAN del empleador. Muestra ingreso bruto, aportes deducibles y retenciones. <strong>Es el documento más importante.</strong>'},
+      {id:'oi',l:'Otros ingresos',d:'Arriendos, intereses, dividendos. Todo debe declararse.'},
+    ]},
+    {s:'Patrimonio a dic 31',items:[
+      {id:'inm',l:'Inmuebles',d:'Mayor valor entre costo fiscal y avalúo catastral.'},
+      {id:'veh',l:'Vehículos',d:'Valor comercial según tabla RUNT.'},
+      {id:'cba',l:'Saldos cuentas bancarias',d:'Saldo del último día del año.'},
+      {id:'deu',l:'Deudas vigentes',d:'Deudas al 31 dic reducen el patrimonio líquido.'},
+    ]},
+    {s:'Deducciones',items:[
+      {id:'med',l:'Medicina prepagada',d:'<strong>Límite: 16 UVT/mes = $10.051.968/año en 2026.</strong> Solo lo que paga el trabajador.'},
+      {id:'afc',l:'Aportes AFC',d:'<strong>Hasta 30% ingreso, máx 3.800 UVT = $199.021.200 en 2026.</strong>'},
+      {id:'penv',l:'Pensión voluntaria',d:'<strong>Mismo límite AFC, sumados.</strong> No retirar antes de 10 años.'},
+      {id:'iviv',l:'Intereses crédito hipotecario',d:'<strong>Máximo 1.200 UVT/año = $62.848.800 en 2026.</strong> Solo adquisición de vivienda.'},
+      {id:'dep2',l:'Dependientes económicos',d:'<strong>10% ingreso, máx 32 UVT/mes = $20.103.936/año en 2026.</strong> Cónyuge sin ingresos, hijos <18, hijos hasta 23 con estudios.'},
+    ]},
+  ],
+  independiente:[
+    {s:'Ingresos',items:[
+      {id:'fact',l:'Facturas o cuentas de cobro',d:'Todos los ingresos del año.'},
+      {id:'cret',l:'Certificados de retención',d:'De cada cliente que practicó retención.'},
+    ]},
+    {s:'Costos y Gastos',items:[
+      {id:'gop',l:'Facturas de gastos',d:'Arriendo, servicios, papelería. Deben ser necesarios para producir el ingreso.'},
+      {id:'ss2',l:'Aportes seguridad social',d:'<strong>100% deducibles.</strong> Solicita planillas PILA del año.'},
+    ]},
+    {s:'Patrimonio',items:[
+      {id:'inm2',l:'Inmuebles',d:'Mayor valor entre costo fiscal y avalúo catastral.'},
+      {id:'veh2',l:'Vehículos',d:'Valor comercial RUNT.'},
+      {id:'cba2',l:'Saldos bancarios',d:'Extracto último día del año.'},
+      {id:'deu2',l:'Deudas',d:'Reducen patrimonio líquido.'},
+    ]},
+    {s:'Deducciones',items:[
+      {id:'med2',l:'Medicina prepagada',d:'<strong>16 UVT/mes.</strong>'},
+      {id:'afc2',l:'AFC',d:'<strong>Hasta 30% ingreso, máx 3.800 UVT.</strong>'},
+      {id:'penv2',l:'Pensión voluntaria',d:'<strong>Sumado con AFC.</strong>'},
+      {id:'iviv2',l:'Intereses hipotecario',d:'<strong>Máx 1.200 UVT/año.</strong>'},
+      {id:'dep3',l:'Dependientes',d:'<strong>10% ingreso, máx 32 UVT/mes.</strong>'},
+    ]},
+  ],
+};
+CL_PN.mixto = CL_PN.asalariado.concat([{s:'Gastos Independiente',items:CL_PN.independiente[1].items}]);
+
+function semEmp(e){
+  var tot=CL_EMP.reduce(function(a,s){ return a+s.items.length; },0);
+  var dn=Object.values(e.cl||{}).filter(Boolean).length;
+  var p=tot?dn/tot:0;
+  return p===1?'g':p>=0.5?'a':'r';
+}
+function semPer(p){
+  var cl=CL_PN[p.tipo||'asalariado']||CL_PN.asalariado;
+  var tot=cl.reduce(function(a,s){ return a+s.items.length; },0);
+  var dn=Object.values(p.cl||{}).filter(Boolean).length;
+  var pct=tot?dn/tot:0;
+  return pct===1?'g':pct>=0.5?'a':'r';
+}
+
+// ===== HOME REDISEÑADO - RESUMEN POR CLIENTE =====
+function renderHome(){
+  var hoy=new Date();
+  var html='<div class="ph"><h1>AsesoCont 📊</h1><p>'+MDS[hoy.getDay()]+', '+hoy.getDate()+' de '+MCL[hoy.getMonth()]+' '+hoy.getFullYear()+'</p></div>';
+  
+  if(DB.empresas.length===0 && DB.personas.length===0){
+    html+='<div class="empty"><div class="eico">🏢</div><div class="et">Sin clientes registrados</div><div class="es">Toca + en Empresas o Personas para empezar.</div></div>';
+  } else {
+    html+='<div class="slabel">MIS CLIENTES</div>';
+    
+    // Empresas con pendientes
+    DB.empresas.forEach(function(e){
+      var sem=semEmp(e);
+      var col=avColor(e.nom);
+      var ini=avInitials(e.nom);
+      var venc=vencEmp(e).slice(0,3);
+      var proxVenc=venc.length>0?venc[0]:null;
+      var urgentes=venc.filter(function(v){ return dias(v.f)<=7; }).length;
+      var pendCL=CL_EMP.reduce(function(a,s){ return a+s.items.length; },0) - Object.values(e.cl||{}).filter(Boolean).length;
+      
+      html+='<div class="card" onclick="openDetEmp(\''+e.id+'\')">';
+      html+='<div class="ct"><div class="av" style="background:'+col+'22;color:'+col+'">'+ini+'</div>';
+      html+='<div class="ci"><div class="cn">'+e.nom+'</div><div class="cs">Empresa · '+(e.nit||'Sin NIT')+'</div></div>';
+      html+='<div class="sem '+sem+'"></div></div>';
+      
+      // Pendientes
+      var pends=[];
+      if(pendCL>0) pends.push('<div class="pend-row"><div class="pend-dot" style="background:var(--amber)"></div>'+pendCL+' items del checklist</div>');
+      if(urgentes>0) pends.push('<div class="pend-row"><div class="pend-dot" style="background:var(--red)"></div>'+urgentes+' vencimiento'+(urgentes>1?'s':'')+' urgente'+(urgentes>1?'s':'')+'</div>');
+      if(proxVenc && urgentes===0){
+        var ds=dias(proxVenc.f);
+        pends.push('<div class="pend-row"><div class="pend-dot" style="background:var(--green)"></div>Próximo: '+proxVenc.l+' ('+lblD(ds)+')</div>');
+      }
+      if(pends.length===0) pends.push('<div class="pend-row"><div class="pend-dot" style="background:var(--green)"></div>Todo al día ✓</div>');
+      html+=pends.join('');
+      html+='</div>';
+    });
+    
+    // Personas con pendientes
+    DB.personas.forEach(function(p){
+      var sem=semPer(p);
+      var ini=avInitials(p.nom);
+      var cl=CL_PN[p.tipo||'asalariado']||CL_PN.asalariado;
+      var pendCL=cl.reduce(function(a,s){ return a+s.items.length; },0) - Object.values(p.cl||{}).filter(Boolean).length;
+      
+      html+='<div class="card" onclick="openDetPer(\''+p.id+'\')">';
+      html+='<div class="ct"><div class="av" style="background:var(--bbg);color:var(--blue)">'+ini+'</div>';
+      html+='<div class="ci"><div class="cn">'+p.nom+'</div><div class="cs">Persona Natural · Renta '+(p.anio||'2024')+'</div></div>';
+      html+='<div class="sem '+sem+'"></div></div>';
+      
+      var pends=[];
+      if(pendCL>0) pends.push('<div class="pend-row"><div class="pend-dot" style="background:var(--amber)"></div>'+pendCL+' documentos faltantes</div>');
+      else pends.push('<div class="pend-row"><div class="pend-dot" style="background:var(--green)"></div>Documentos completos ✓</div>');
+      html+=pends.join('');
+      html+='</div>';
+    });
+  }
+  
+  document.getElementById('s-home').innerHTML=html;
+}
+
+// ===== EMPRESAS =====
+function renderEmpresas(){
+  var q=(document.getElementById('emp-q')||{value:''}).value.toLowerCase();
+  var list=DB.empresas.filter(function(e){ return !q||e.nom.toLowerCase().includes(q)||(e.nit||'').includes(q); });
+  var html='<div class="ph"><h1>Empresas</h1><p>'+DB.empresas.length+' cliente'+(DB.empresas.length!==1?'s':'')+' registrado'+(DB.empresas.length!==1?'s':'')+'</p></div>';
+  html+='<div class="swrap"><input class="sinp" id="emp-q" type="search" placeholder="Buscar empresa o NIT..." oninput="renderEmpresas()"></div>';
+  if(list.length===0) html+='<div class="empty"><div class="eico">🏢</div><div class="et">Sin empresas</div><div class="es">Toca + para registrar tu primer cliente.</div></div>';
+  else list.forEach(function(e){ html+=empCard(e); });
+  document.getElementById('s-empresas').innerHTML=html;
+}
+
+function empCard(e){
+  var col=avColor(e.nom); var ini=avInitials(e.nom); var sem=semEmp(e);
+  var tot=CL_EMP.reduce(function(a,s){ return a+s.items.length; },0);
+  var dn=Object.values(e.cl||{}).filter(Boolean).length;
+  var pct=tot?Math.round(dn/tot*100):0;
+  var semColor=sem==='g'?'var(--green)':sem==='a'?'var(--amber)':'var(--red)';
+  var tags='';
+  if(e.reg==='bi') tags+='<span class="tag b">IVA Bimestral</span>';
+  else if(e.reg==='cuat') tags+='<span class="tag b">IVA Cuatrim.</span>';
+  else if(e.reg==='anual') tags+='<span class="tag b">IVA Anual</span>';
+  if(e.reg==='simple') tags+='<span class="tag a">SIMPLE</span>';
+  if(e.emp==='si') tags+='<span class="tag g">Con nómina</span>';
+  return '<div class="card" onclick="openDetEmp(\''+e.id+'\')"><div class="ct"><div class="av" style="background:'+col+'22;color:'+col+'">'+ini+'</div><div class="ci"><div class="cn">'+e.nom+'</div><div class="cs">'+(e.nit||'Sin NIT')+'</div></div><div class="sem '+sem+'"></div></div><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:10px;color:var(--tx3)">Checklist de toma</span><span style="font-size:10px;color:var(--tx2);font-family:var(--mono)">'+dn+'/'+tot+' · '+pct+'%</span></div><div class="pbg"><div class="pfill" style="width:'+pct+'%;background:'+semColor+'"></div></div></div>'+(tags?'<div class="tags">'+tags+'</div>':'')+'</div>';
+}
+
+// ===== PERSONAS =====
+function renderPersonas(){
+  var q=(document.getElementById('per-q')||{value:''}).value.toLowerCase();
+  var list=DB.personas.filter(function(p){ return !q||p.nom.toLowerCase().includes(q)||(p.ced||'').includes(q); });
+  var html='<div class="ph"><h1>Personas Naturales</h1><p>'+DB.personas.length+' declarante'+(DB.personas.length!==1?'s':'')+' registrado'+(DB.personas.length!==1?'s':'')+'</p></div>';
+  html+='<div class="swrap"><input class="sinp" id="per-q" type="search" placeholder="Buscar nombre o cédula..." oninput="renderPersonas()"></div>';
+  if(list.length===0) html+='<div class="empty"><div class="eico">👤</div><div class="et">Sin personas</div><div class="es">Toca + para registrar un declarante.</div></div>';
+  else list.forEach(function(p){ html+=perCard(p); });
+  document.getElementById('s-personas').innerHTML=html;
+}
+
+function perCard(p){
+  var ini=avInitials(p.nom); var sem=semPer(p);
+  var cl=CL_PN[p.tipo||'asalariado']||CL_PN.asalariado;
+  var tot=cl.reduce(function(a,s){ return a+s.items.length; },0);
+  var dn=Object.values(p.cl||{}).filter(Boolean).length;
+  var pct=tot?Math.round(dn/tot*100):0;
+  var tl={asalariado:'Asalariado',independiente:'Independiente',mixto:'Mixto'}[p.tipo||'asalariado'];
+  return '<div class="card" onclick="openDetPer(\''+p.id+'\')"><div class="ct"><div class="av" style="background:var(--bbg);color:var(--blue)">'+ini+'</div><div class="ci"><div class="cn">'+p.nom+'</div><div class="cs">CC '+(p.ced||'sin cédula')+' · Renta '+(p.anio||'2024')+'</div></div><div class="sem '+sem+'"></div></div><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:10px;color:var(--tx3)">Documentos</span><span style="font-size:10px;color:var(--tx2);font-family:var(--mono)">'+dn+'/'+tot+' · '+pct+'%</span></div><div class="pbg"><div class="pfill" style="width:'+pct+'%;background:var(--blue)"></div></div></div><div class="tags"><span class="tag b">'+tl+'</span><span class="tag a">Renta '+(p.anio||'2024')+'</span></div></div>';
+}
+
+// ===== DETALLE EMPRESA CON SELECTOR DE AÑOS =====
+function openDetEmp(id){ C.eid=id; C.tab='cl'; C.prev=C.scr; P.yearSel=2026; nav('det-emp'); }
+function renderDetEmp(){
+  var e=DB.empresas.find(function(x){ return x.id===C.eid; });
+  if(!e){ document.getElementById('s-det-emp').innerHTML='<div class="back" onclick="goBack()"><span>‹</span> Volver</div>'; return; }
+  
+  var col=avColor(e.nom); var ini=avInitials(e.nom);
+  var tot=CL_EMP.reduce(function(a,s){ return a+s.items.length; },0);
+  var dn=Object.values(e.cl||{}).filter(Boolean).length;
+  var pct=tot?Math.round(dn/tot*100):0;
+  
+  var clHTML='';
+  CL_EMP.forEach(function(sec){
+    clHTML+='<div class="cls"><div class="clst">'+sec.s+'</div>';
+    sec.items.forEach(function(it){
+      var chk=!!(e.cl||{})[it.id];
+      clHTML+='<div class="cli"><div class="clh" onclick="toggleEC(\''+it.id+'\')">';
+      clHTML+='<div class="cb'+(chk?' on':'')+'"></div><div class="clt'+(chk?' done':'')+'">'+it.l+'</div>';
+      if(it.d) clHTML+='<div class="infobtn" onclick="event.stopPropagation();toggleDet(this)">ⓘ</div>';
+      clHTML+='</div>';
+      if(it.d) clHTML+='<div class="cldet"><p>'+it.d+'</p></div>';
+      clHTML+='</div>';
+    });
+    clHTML+='</div>';
+  });
+  
+  // Vencimientos con selector de año
+  var vYear=vencEmpYear(e, P.yearSel);
+  var vHTML='<div class="year-sel">';
+  [2024,2025,2026].forEach(function(y){
+    vHTML+='<div class="year-btn'+(P.yearSel===y?' on':'')+'" onclick="P.yearSel='+y+';renderDetEmp()">'+y+'</div>';
+  });
+  vHTML+='</div>';
+  
+  if(vYear.length===0) vHTML+='<div style="padding:20px;text-align:center;color:var(--tx2);font-size:13px">Sin vencimientos en '+P.yearSel+'</div>';
+  else {
+    // Agrupar por pagado/pendiente
+    var pagados=[]; var pendientes=[];
+    vYear.forEach(function(v){
+      var key=v.tipo.replace('_'+v.year,'')+'_'+v.f;
+      var isPaid=(e.pagos||{})[key];
+      if(isPaid) pagados.push(v);
+      else pendientes.push(v);
+    });
+    if(pendientes.length>0){
+      vHTML+='<div class="slabel">PENDIENTES '+P.yearSel+'</div>';
+      pendientes.forEach(function(v){ vHTML+=vrHTML(v); });
+    }
+    if(pagados.length>0){
+      vHTML+='<div class="slabel">PAGADOS '+P.yearSel+'</div>';
+      pagados.forEach(function(v){ vHTML+=vrHTML(v); });
+    }
+  }
+  
+  var pagHTML=renderPagosHTML(e);
+  
+  var html='<div class="back" onclick="goBack()"><span>‹</span> Volver</div>';
+  html+='<div style="padding:16px 20px 12px;display:flex;align-items:center;gap:12px">';
+  html+='<div class="av" style="width:48px;height:48px;font-size:16px;background:'+col+'22;color:'+col+';border-radius:14px">'+ini+'</div>';
+  html+='<div><div style="font-size:17px;font-weight:600">'+e.nom+'</div><div style="font-size:11px;color:var(--tx2);font-family:var(--mono);margin-top:3px">'+(e.nit||'Sin NIT')+'</div></div></div>';
+  html+='<div class="tabs">';
+  html+='<div class="tab'+(C.tab==='cl'?' on':'')+'" onclick="C.tab=\'cl\';renderDetEmp()">✓ Checklist</div>';
+  html+='<div class="tab'+(C.tab==='vc'?' on':'')+'" onclick="C.tab=\'vc\';renderDetEmp()">📅 Vencimientos</div>';
+  html+='<div class="tab'+(C.tab==='pg'?' on':'')+'" onclick="C.tab=\'pg\';renderDetEmp()">💳 Pagos</div>';
+  html+='</div>';
+  html+='<div style="display:'+(C.tab==='cl'?'block':'none')+';padding:0 16px 20px">'+clHTML+'<button class="btn btnd" onclick="delEmp(\''+e.id+'\')">Eliminar empresa</button></div>';
+  html+='<div style="display:'+(C.tab==='vc'?'block':'none')+';padding-bottom:20px">'+vHTML+'</div>';
+  html+='<div style="display:'+(C.tab==='pg'?'block':'none')+';padding:0 16px 20px">'+pagHTML+'</div>';
+  document.getElementById('s-det-emp').innerHTML=html;
+}
+
+function toggleEC(id){
+  var e=DB.empresas.find(function(x){ return x.id===C.eid; }); if(!e) return;
+  if(!e.cl) e.cl={};
+  e.cl[id]=!e.cl[id]; dbSave(); renderDetEmp();
+}
+function toggleDet(btn){ var d=btn.closest('.cli').querySelector('.cldet'); if(d) d.classList.toggle('on'); }
+function delEmp(id){ if(!confirm('¿Eliminar esta empresa?')) return; DB.empresas=DB.empresas.filter(function(x){ return x.id!==id; }); dbSave(); goBack(); }
+
+function renderPagosHTML(e){
+  var html='';
+  if(e.emp!=='si'){
+    html+='<div class="wbox"><p>Esta empresa no tiene empleados. Edita la empresa si tiene nómina.</p></div>';
+  } else {
+    html+='<div class="ibox"><p>Marca cada pago mensual de PILA.</p></div>';
+    var pilaYear=VENC['pila_'+P.yearSel]||[];
+    pilaYear.forEach(function(v){
+      var key='pila_'+v.f; var pg=(e.pagos||{})[key]; var ds=dias(v.f); var col=pg?'green':colorD(ds);
+      html+='<div class="pagor" onclick="openPago(\''+e.id+'\',\''+key+'\',\''+v.l+'\')">';
+      html+='<div class="pagoc'+(pg?' paid':'')+'"></div>';
+      html+='<div class="pagoi"><div class="pagol">'+v.l+'</div>';
+      if(pg) html+='<div class="pagos" style="color:var(--green)">✓ Pagado</div>';
+      html+='</div><div class="vb" style="background:var(--'+col+'bg);color:var(--'+col+')">'+(pg?'Pagado':lblD(ds))+'</div></div>';
+    });
+  }
+  return html;
+}
+
+var pagoCtx={};
+function openPago(eid,key,label){
+  pagoCtx={eid:eid,key:key};
+  var e=DB.empresas.find(function(x){ return x.id===eid; });
+  var pg=e&&e.pagos?e.pagos[key]:null;
+  document.getElementById('modal-pago').innerHTML='<div class="mh"></div><div class="mt">'+label+'</div>'+
+    '<div class="fg"><label class="fl">Fecha de pago</label><input class="fi" id="pg-fecha" type="date" value="'+(pg?pg.fecha:new Date().toISOString().split('T')[0])+'"></div>'+
+    '<div class="fg"><label class="fl">Valor (COP)</label><input class="fi" id="pg-valor" placeholder="0" inputmode="numeric" value="'+(pg?pg.valor:'')+'"></div>'+
+    '<button class="btn btnp" onclick="savePago()">Guardar</button>'+
+    '<button class="btn btns" onclick="closeOv(\'ov-pago\')">Cancelar</button>';
+  openOv('ov-pago');
+}
+function savePago(){
+  var e=DB.empresas.find(function(x){ return x.id===pagoCtx.eid; }); if(!e) return;
+  if(!e.pagos) e.pagos={};
+  e.pagos[pagoCtx.key]={fecha:g('pg-fecha'),valor:g('pg-valor')};
+  dbSave(); closeOv('ov-pago'); renderDetEmp();
+}
+
+// ===== DETALLE PERSONA =====
+function openDetPer(id){ C.pid=id; C.tab='cl'; C.prev=C.scr; nav('det-per'); }
+function renderDetPer(){
+  var p=DB.personas.find(function(x){ return x.id===C.pid; });
+  if(!p){ document.getElementById('s-det-per').innerHTML='<div class="back" onclick="goBack()"><span>‹</span> Volver</div>'; return; }
+  
+  var ini=avInitials(p.nom);
+  var cl=CL_PN[p.tipo||'asalariado']||CL_PN.asalariado;
+  var tot=cl.reduce(function(a,s){ return a+s.items.length; },0);
+  var dn=Object.values(p.cl||{}).filter(Boolean).length;
+  var pct=tot?Math.round(dn/tot*100):0;
+  
+  var clHTML='';
+  cl.forEach(function(sec){
+    clHTML+='<div class="cls"><div class="clst">'+sec.s+'</div>';
+    sec.items.forEach(function(it){
+      var chk=!!(p.cl||{})[it.id];
+      clHTML+='<div class="cli"><div class="clh" onclick="togglePC(\''+it.id+'\')">';
+      clHTML+='<div class="cb'+(chk?' on':'')+'"></div><div class="clt'+(chk?' done':'')+'">'+it.l+'</div>';
+      if(it.d) clHTML+='<div class="infobtn" onclick="event.stopPropagation();toggleDet(this)">ⓘ</div>';
+      clHTML+='</div>';
+      if(it.d) clHTML+='<div class="cldet"><p>'+it.d+'</p></div>';
+      clHTML+='</div>';
+    });
+    clHTML+='</div>';
+  });
+  
+  var html='<div class="back" onclick="goBack()"><span>‹</span> Volver</div>';
+  html+='<div style="padding:16px 20px 12px;display:flex;align-items:center;gap:12px">';
+  html+='<div class="av" style="width:48px;height:48px;font-size:16px;background:var(--bbg);color:var(--blue);border-radius:14px">'+ini+'</div>';
+  html+='<div><div style="font-size:17px;font-weight:600">'+p.nom+'</div><div style="font-size:11px;color:var(--tx2);font-family:var(--mono);margin-top:3px">CC '+(p.ced||'sin cédula')+' · Renta '+(p.anio||'2024')+'</div></div></div>';
+  html+='<div style="padding:0 16px 20px">'+clHTML+'<button class="btn btnd" onclick="delPer(\''+p.id+'\')">Eliminar</button></div>';
+  document.getElementById('s-det-per').innerHTML=html;
+}
+function togglePC(id){
+  var p=DB.personas.find(function(x){ return x.id===C.pid; }); if(!p) return;
+  if(!p.cl) p.cl={};
+  p.cl[id]=!p.cl[id]; dbSave(); renderDetPer();
+}
+function delPer(id){ if(!confirm('¿Eliminar?')) return; DB.personas=DB.personas.filter(function(x){ return x.id!==id; }); dbSave(); goBack(); }
+
+// ===== NÓMINA =====
+function renderNomina(){
+  var html='<div class="ph"><h1>Liquidador de Nómina</h1><p>Calcula el desprendible 2026</p></div><div style="padding:0 16px">';
+  html+='<div class="ibox"><p><strong>SMMLV 2026: $1.750.905</strong> · Aux. transporte: <strong>$249.095</strong> · Jornada: <strong>47h/sem (220h/mes)</strong></p></div>';
+  html+='<div class="fg"><label class="fl">Nombre empleado</label><input class="fi" id="n-nom"></div>';
+  html+='<div class="fg"><label class="fl">Empresa</label><input class="fi" id="n-emp"></div>';
+  html+='<div class="fg"><label class="fl">Período</label><div class="tsel"><button class="tb on" onclick="pick(this,\'npmodo\',\'mensual\');calcNom()">Mensual</button><button class="tb" onclick="pick(this,\'npmodo\',\'quincenal\');calcNom()">Quincenal</button></div></div>';
+  html+='<div class="fg"><label class="fl">Salario mensual (COP)</label><input class="fi" id="n-sal" placeholder="1750905" inputmode="numeric" oninput="calcNom()"></div>';
+  html+='<div class="fg"><label class="fl">Días trabajados</label><input class="fi" id="n-dias" value="30" inputmode="numeric" oninput="calcNom()"></div>';
+  html+='<div class="fg"><label class="fl">Horas extra diurnas</label><input class="fi" id="n-hedt" value="0" inputmode="numeric" oninput="calcNom()"></div>';
+  html+='<div class="fg"><label class="fl">Horas extra nocturnas</label><input class="fi" id="n-hent" value="0" inputmode="numeric" oninput="calcNom()"></div>';
+  html+='<div id="nom-res"></div></div>';
+  document.getElementById('s-nomina').innerHTML=html;
+  P.npmodo='mensual'; calcNom();
+}
+
+function calcNom(){
+  var sal=parseFloat((g('n-sal')||'0').replace(/\D/g,''))||0;
+  var dias2=parseFloat(g('n-dias')||30)||30;
+  var hedt=parseFloat(g('n-hedt')||0)||0;
+  var hent=parseFloat(g('n-hent')||0)||0;
+  var aux=(sal<=2*SMMLV)?AUX_TRANS:0;
+  var factor=P.npmodo==='quincenal'?0.5:1;
+  var vHora=sal/220;
+  var extD=vHora*hedt*1.25; var extN=vHora*hent*1.75;
+  var salProp=sal/30*dias2;
+  var totalDev=salProp+aux*factor+extD+extN;
+  var baseSS=salProp+extD+extN;
+  var sEmp=baseSS*0.04; var pEmp=baseSS*0.04; var fSol=baseSS>=4*SMMLV?baseSS*0.01:0;
+  var totDed=sEmp+pEmp+fSol;
+  var neto=totalDev-totDed;
+  
+  var r=document.getElementById('nom-res'); if(!r) return;
+  r.innerHTML='<div class="card static" style="margin:0 0 10px"><div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:10px">DEVENGADO</div>'+
+    '<div class="nrow"><span class="nl">Salario ('+dias2+' días)</span><span class="nv">$'+fmtNum(salProp)+'</span></div>'+
+    (aux>0?'<div class="nrow"><span class="nl">Auxilio transporte</span><span class="nv">$'+fmtNum(aux*factor)+'</span></div>':'')+
+    (extD>0?'<div class="nrow"><span class="nl">H.E. Diurnas</span><span class="nv">$'+fmtNum(extD)+'</span></div>':'')+
+    (extN>0?'<div class="nrow"><span class="nl">H.E. Nocturnas</span><span class="nv">$'+fmtNum(extN)+'</span></div>':'')+
+    '<div class="nrow"><span class="nl" style="font-weight:600">Total Devengado</span><span class="nv pos">$'+fmtNum(totalDev)+'</span></div></div>'+
+    '<div class="card static" style="margin:0 0 10px"><div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:10px">DEDUCCIONES</div>'+
+    '<div class="nrow"><span class="nl">Salud (4%)</span><span class="nv neg">–$'+fmtNum(sEmp)+'</span></div>'+
+    '<div class="nrow"><span class="nl">Pensión (4%)</span><span class="nv neg">–$'+fmtNum(pEmp)+'</span></div>'+
+    (fSol>0?'<div class="nrow"><span class="nl">Fondo solidaridad (1%)</span><span class="nv neg">–$'+fmtNum(fSol)+'</span></div>':'')+
+    '<div class="nrow"><span class="nl" style="font-weight:600">Total Deducciones</span><span class="nv neg">–$'+fmtNum(totDed)+'</span></div></div>'+
+    '<div class="card static" style="border-color:var(--green)"><div class="nrow"><span class="nl" style="font-size:15px;font-weight:600">NETO A PAGAR</span><span class="nv pos" style="font-size:18px">$'+fmtNum(neto)+'</span></div></div>';
+}
+
+// ===== MODALES EMPRESA Y PERSONA =====
+function openModalEmpresa(){
+  var html='<div class="mh"></div><div class="mt">Registrar Empresa</div><div class="ms">Completa los datos básicos</div>';
+  html+='<div class="fg"><label class="fl">Razón Social *</label><input class="fi" id="e-nom"></div>';
+  html+='<div class="fg"><label class="fl">NIT</label><input class="fi" id="e-nit" placeholder="900.123.456-7"></div>';
+  html+='<div class="fg"><label class="fl">Régimen IVA</label><select class="fsel" id="e-reg" onchange="showRegHint()">';
+  html+='<option value="">Seleccionar...</option>';
+  html+='<option value="bi">Responsable IVA — Bimestral</option>';
+  html+='<option value="cuat">Responsable IVA — Cuatrimestral</option>';
+  html+='<option value="anual">Responsable IVA — Anual</option>';
+  html+='<option value="noiva">No Responsable de IVA</option>';
+  html+='<option value="simple">Régimen Simple</option>';
+  html+='</select><div id="reg-hint" class="fhint warn" style="display:none"></div></div>';
+  html+='<div class="fg"><label class="fl">Tipo</label><div class="tsel">';
+  html+='<button class="tb on" onclick="pick(this,\'et\',\'SAS\')">SAS</button>';
+  html+='<button class="tb" onclick="pick(this,\'et\',\'LTDA\')">LTDA</button>';
+  html+='<button class="tb" onclick="pick(this,\'et\',\'SA\')">S.A.</button>';
+  html+='<button class="tb" onclick="pick(this,\'et\',\'UNIP\')">Unipersonal</button>';
+  html+='</div></div>';
+  html+='<div class="fg"><label class="fl">¿Tiene empleados?</label><div class="tsel">';
+  html+='<button class="tb" onclick="pick(this,\'ee\',\'si\')">Sí, tiene nómina</button>';
+  html+='<button class="tb on" onclick="pick(this,\'ee\',\'no\')">No tiene empleados</button>';
+  html+='</div></div>';
+  html+='<button class="btn btnp" onclick="saveEmp()">Guardar</button>';
+  html+='<button class="btn btns" onclick="closeOv(\'ov-emp\')">Cancelar</button>';
+  document.getElementById('modal-emp').innerHTML=html;
+  P.et='SAS'; P.ee='no';
+  openOv('ov-emp');
+}
+
+function showRegHint(){
+  var v=g('e-reg');
+  var hints={
+    bi:'Ingresos > 92.000 UVT (~$4.8M COP/año en 2026). Declara cada 2 meses.',
+    cuat:'Ingresos entre 15.000 y 92.000 UVT. Declara 3 veces al año.',
+    anual:'Ingresos < 15.000 UVT. Declara una vez al año.',
+    noiva:'No responsable del impuesto. Sí debe presentar Retención y Renta.',
+    simple:'Unifica renta, ICA e IVA en una sola declaración anual.',
+  };
+  var el=document.getElementById('reg-hint');
+  if(el){ el.textContent=hints[v]||''; el.style.display=v?'block':'none'; }
+}
+
+function saveEmp(){
+  var n=g('e-nom').trim();
+  if(!n){ alert('El nombre es obligatorio'); return; }
+  DB.empresas.push({
+    id:Date.now().toString(), nom:n, nit:g('e-nit').trim(),
+    tipo:P.et, reg:g('e-reg'), emp:P.ee, cl:{}, pagos:{},
+    ts:new Date().toISOString()
+  });
+  dbSave(); closeOv('ov-emp'); renderEmpresas();
+}
+
+function openModalPersona(){
+  var html='<div class="mh"></div><div class="mt">Registrar Persona Natural</div><div class="ms">Para declaración de renta</div>';
+  html+='<div class="fg"><label class="fl">Nombre Completo *</label><input class="fi" id="p-nom"></div>';
+  html+='<div class="fg"><label class="fl">Cédula</label><input class="fi" id="p-ced" placeholder="123.456.789"></div>';
+  html+='<div class="fg"><label class="fl">Tipo</label><div class="tsel">';
+  html+='<button class="tb on" onclick="pick(this,\'pt\',\'asalariado\')">Asalariado</button>';
+  html+='<button class="tb" onclick="pick(this,\'pt\',\'independiente\')">Independiente</button>';
+  html+='<button class="tb" onclick="pick(this,\'pt\',\'mixto\')">Mixto</button>';
+  html+='</div></div>';
+  html+='<div class="fg"><label class="fl">Año gravable</label><select class="fsel" id="p-anio">';
+  html+='<option value="2025">2025</option><option value="2024" selected>2024</option>';
+  html+='<option value="2023">2023</option><option value="2022">2022</option></select></div>';
+  html+='<button class="btn btnp" onclick="savePer()">Guardar</button>';
+  html+='<button class="btn btns" onclick="closeOv(\'ov-per\')">Cancelar</button>';
+  document.getElementById('modal-per').innerHTML=html;
+  P.pt='asalariado';
+  openOv('ov-per');
+}
+
+function savePer(){
+  var n=g('p-nom').trim();
+  if(!n){ alert('El nombre es obligatorio'); return; }
+  DB.personas.push({
+    id:Date.now().toString(), nom:n, ced:g('p-ced').trim(),
+    tipo:P.pt, anio:g('p-anio'), cl:{}, ts:new Date().toISOString()
+  });
+  dbSave(); closeOv('ov-per'); renderPersonas();
+}
+
+// ===== CERTIFICACIONES CON MIXTO =====
+function renderCerts(){
+  var html='<div class="ph"><h1>Certificaciones</h1><p>Genera certificados de ingresos</p></div><div style="padding:0 16px">';
+  html+='<div class="ibox"><p>Completa los datos y genera el certificado. Solo falta tu firma y sello.</p></div>';
+  html+='<div class="fg"><label class="fl">Tipo</label><div class="tsel">';
+  html+='<button class="tb on" onclick="pick(this,\'ct\',\'emp\');renderCertForm()">Empleado</button>';
+  html+='<button class="tb" onclick="pick(this,\'ct\',\'ind\');renderCertForm()">Independiente</button>';
+  html+='<button class="tb" onclick="pick(this,\'ct\',\'mix\');renderCertForm()">Mixto</button>';
+  html+='</div></div><div id="cert-form"></div></div>';
+  document.getElementById('s-certs').innerHTML=html;
+  P.ct='emp'; renderCertForm();
+}
+
+function renderCertForm(){
+  var f=document.getElementById('cert-form'); if(!f) return;
+  var cc='<div class="fg"><label class="fl">Ciudad</label><input class="fi" id="c-ciu" placeholder="Villavicencio"></div>'+
+    '<div class="fg"><label class="fl">Nombre contador</label><input class="fi" id="c-ctd"></div>'+
+    '<div class="fg"><label class="fl">T.P.</label><input class="fi" id="c-tp"></div>';
+  if(P.ct==='emp'){
+    f.innerHTML='<div class="fg"><label class="fl">Nombre empleado</label><input class="fi" id="c-nom"></div>'+
+      '<div class="fg"><label class="fl">Cédula</label><input class="fi" id="c-ced"></div>'+
+      '<div class="fg"><label class="fl">Empresa</label><input class="fi" id="c-emp2"></div>'+
+      '<div class="fg"><label class="fl">NIT</label><input class="fi" id="c-nit"></div>'+
+      '<div class="fg"><label class="fl">Cargo</label><input class="fi" id="c-cargo"></div>'+
+      '<div class="fg"><label class="fl">Salario mensual</label><input class="fi" id="c-sal" placeholder="1750905"></div>'+
+      '<div class="fg"><label class="fl">Fecha ingreso</label><input class="fi" id="c-ing" type="date"></div>'+
+      cc+'<button class="btn btnp" onclick="genCertEmp()">Generar</button><div id="cert-out"></div>';
+  } else if(P.ct==='ind'){
+    f.innerHTML='<div class="fg"><label class="fl">Nombre</label><input class="fi" id="c-nom"></div>'+
+      '<div class="fg"><label class="fl">Cédula</label><input class="fi" id="c-ced"></div>'+
+      '<div class="fg"><label class="fl">Actividad</label><input class="fi" id="c-act"></div>'+
+      '<div class="fg"><label class="fl">Ingresos mensuales promedio</label><input class="fi" id="c-ing2" placeholder="3000000"></div>'+
+      '<div class="fg"><label class="fl">Año</label><select class="fsel" id="c-anio"><option>2025</option><option selected>2024</option></select></div>'+
+      cc+'<button class="btn btnp" onclick="genCertInd()">Generar</button><div id="cert-out"></div>';
+  } else {
+    f.innerHTML='<div class="wbox"><p>Persona con ingresos laborales Y honorarios. El certificado incluye ambas fuentes.</p></div>'+
+      '<div style="font-size:11px;font-weight:600;color:var(--tx2);margin:12px 0 8px">DATOS PERSONALES</div>'+
+      '<div class="fg"><label class="fl">Nombre</label><input class="fi" id="c-nom"></div>'+
+      '<div class="fg"><label class="fl">Cédula</label><input class="fi" id="c-ced"></div>'+
+      '<div class="fg"><label class="fl">Año</label><select class="fsel" id="c-anio"><option>2025</option><option selected>2024</option></select></div>'+
+      '<div style="font-size:11px;font-weight:600;color:var(--blue);margin:12px 0 8px">PARTE LABORAL</div>'+
+      '<div class="fg"><label class="fl">Empresa</label><input class="fi" id="c-emp2"></div>'+
+      '<div class="fg"><label class="fl">NIT</label><input class="fi" id="c-nit"></div>'+
+      '<div class="fg"><label class="fl">Cargo</label><input class="fi" id="c-cargo"></div>'+
+      '<div class="fg"><label class="fl">Salario mensual</label><input class="fi" id="c-sal" placeholder="1750905"></div>'+
+      '<div class="fg"><label class="fl">Fecha ingreso</label><input class="fi" id="c-ing" type="date"></div>'+
+      '<div style="font-size:11px;font-weight:600;color:var(--amber);margin:12px 0 8px">PARTE INDEPENDIENTE</div>'+
+      '<div class="fg"><label class="fl">Actividad</label><input class="fi" id="c-act"></div>'+
+      '<div class="fg"><label class="fl">Ingresos mensuales por honorarios</label><input class="fi" id="c-ing2" placeholder="2000000"></div>'+
+      cc+'<button class="btn btnp" onclick="genCertMix()">Generar Certificado Mixto</button><div id="cert-out"></div>';
+  }
+}
+
+function certFirma(ctd,tp){ return '<div class="certf"><div style="margin-top:28px;border-top:1px solid #ddd;padding-top:10px"><div>____________________________</div><div style="font-weight:700;margin-top:4px">'+ctd+'</div><div>Contador Público · T.P. '+tp+'</div></div></div>'; }
+
+function genCertEmp(){
+  var hoy=new Date();
+  var nom=g('c-nom'),ced=g('c-ced'),emp=g('c-emp2'),nit=g('c-nit'),cargo=g('c-cargo');
+  var sal=g('c-sal'),ing=g('c-ing'),ciu=g('c-ciu'),ctd=g('c-ctd'),tp=g('c-tp');
+  var salF=sal?'$'+Number(sal.replace(/\D/g,'')).toLocaleString('es-CO'):sal;
+  var ingF=ing?new Date(ing+'T12:00:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'}):'';
+  document.getElementById('cert-out').innerHTML='<div class="certprev"><div class="certh"><div class="certt">CERTIFICACIÓN LABORAL</div><div class="certs">El suscrito Contador Público certifica:</div></div>'+
+  '<div class="certb"><p>El señor(a) <strong>'+nom+'</strong>, identificado(a) con cédula No. <strong>'+ced+'</strong>, labora en <strong>'+emp+'</strong> NIT <strong>'+nit+'</strong>, cargo de <strong>'+cargo+'</strong>, ingreso el <strong>'+ingF+'</strong>.</p><br>'+
+  '<p>Salario mensual: <strong>'+salF+'</strong>, con todos los beneficios de ley.</p><br>'+
+  '<p>Se expide en <strong>'+ciu+'</strong>, a los '+hoy.getDate()+' días del mes de '+MCL[hoy.getMonth()]+' de '+hoy.getFullYear()+'.</p></div>'+certFirma(ctd,tp)+'</div>';
+}
+
+function genCertInd(){
+  var hoy=new Date();
+  var nom=g('c-nom'),ced=g('c-ced'),act=g('c-act'),ing2=g('c-ing2'),anio=g('c-anio'),ciu=g('c-ciu'),ctd=g('c-ctd'),tp=g('c-tp');
+  var ingF=ing2?'$'+Number(ing2.replace(/\D/g,'')).toLocaleString('es-CO'):ing2;
+  var anuF=ing2?'$'+(Number(ing2.replace(/\D/g,''))*12).toLocaleString('es-CO'):'';
+  document.getElementById('cert-out').innerHTML='<div class="certprev"><div class="certh"><div class="certt">CERTIFICACIÓN DE INGRESOS</div><div class="certs">Trabajador Independiente</div></div>'+
+  '<div class="certb"><p>El suscrito certifica que <strong>'+nom+'</strong>, cédula No. <strong>'+ced+'</strong>, ejerce <strong>'+act+'</strong> como independiente.</p><br>'+
+  '<p>Año gravable <strong>'+anio+'</strong>, ingresos mensuales promedio: <strong>'+ingF+'</strong>, total aproximado anual: <strong>'+anuF+'</strong>.</p><br>'+
+  '<p>Se expide en <strong>'+ciu+'</strong>, a los '+hoy.getDate()+' de '+MCL[hoy.getMonth()]+' de '+hoy.getFullYear()+'.</p></div>'+certFirma(ctd,tp)+'</div>';
+}
+
+function genCertMix(){
+  var hoy=new Date();
+  var nom=g('c-nom'),ced=g('c-ced'),anio=g('c-anio');
+  var emp=g('c-emp2'),nit=g('c-nit'),cargo=g('c-cargo'),sal=g('c-sal'),ing=g('c-ing');
+  var act=g('c-act'),ing2=g('c-ing2');
+  var ciu=g('c-ciu'),ctd=g('c-ctd'),tp=g('c-tp');
+  var salF=sal?'$'+Number(sal.replace(/\D/g,'')).toLocaleString('es-CO'):sal;
+  var ingF=ing?new Date(ing+'T12:00:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'}):'';
+  var honM=ing2?'$'+Number(ing2.replace(/\D/g,'')).toLocaleString('es-CO'):ing2;
+  var honA=ing2?'$'+(Number(ing2.replace(/\D/g,''))*12).toLocaleString('es-CO'):'';
+  var salNum=sal?Number(sal.replace(/\D/g,'')):0;
+  var honNum=ing2?Number(ing2.replace(/\D/g,'')):0;
+  var totalM='$'+(salNum+honNum).toLocaleString('es-CO');
+  var totalA='$'+(( salNum+honNum)*12).toLocaleString('es-CO');
+  document.getElementById('cert-out').innerHTML='<div class="certprev"><div class="certh"><div class="certt">CERTIFICACIÓN DE INGRESOS</div><div class="certs">Trabajador con ingresos mixtos — Año '+anio+'</div></div>'+
+  '<div class="certb">'+
+  '<p>El suscrito certifica que <strong>'+nom+'</strong>, cédula No. <strong>'+ced+'</strong>, durante <strong>'+anio+'</strong> percibió ingresos de dos fuentes:</p><br>'+
+  '<p><strong>1. INGRESOS LABORALES</strong><br>'+
+  'Laboró en <strong>'+emp+'</strong> NIT <strong>'+nit+'</strong>, cargo <strong>'+cargo+'</strong>, ingreso el <strong>'+ingF+'</strong>. Salario mensual: <strong>'+salF+'</strong>.</p><br>'+
+  '<p><strong>2. INGRESOS COMO INDEPENDIENTE</strong><br>'+
+  'Ejerció <strong>'+act+'</strong>, ingresos mensuales promedio <strong>'+honM+'</strong>, total aproximado anual <strong>'+honA+'</strong>.</p><br>'+
+  '<p><strong>TOTAL INGRESOS MENSUALES: '+totalM+'</strong><br><strong>TOTAL ESTIMADO ANUAL: '+totalA+'</strong></p><br>'+
+  '<p>Se expide en <strong>'+ciu+'</strong>, a los '+hoy.getDate()+' de '+MCL[hoy.getMonth()]+' de '+hoy.getFullYear()+'.</p>'+
+  '</div>'+certFirma(ctd,tp)+'</div>';
+}
+
+// ===== GUÍA RENTA 2026 =====
+function renderRenta(){
+  var html='<div class="ph"><h1>Guía Renta 2026</h1><p>Topes, deducciones y planeación</p></div><div style="padding:0 16px">';
+  html+='<div class="ibox"><p><strong>Año gravable 2025 · UVT 2026: $52.374</strong><br>Declaración ago-oct 2026</p></div>';
+  html+='<div class="card static" style="border-color:var(--amber)">'+
+    '<div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:10px">⚠️ TOPE GLOBAL</div>'+
+    '<div class="nrow"><span class="nl">Rentas exentas + deducciones</span><span class="nv" style="color:var(--amber)">Máx 40% ingreso neto</span></div>'+
+    '<div class="nrow"><span class="nl">Tope absoluto (1.340 UVT)</span><span class="nv" style="color:var(--amber)">$70.181.160/año</span></div>'+
+    '<div style="font-size:11px;color:var(--tx3);margin-top:8px">El 25% de renta exenta ya consume 790 UVT ($41.375.460). Solo quedan 550 UVT para otras deducciones.</div></div>';
+  
+  var items=[
+    {tit:'Renta exenta 25%',uvt:'790 UVT/año',cop:'$41.375.460',nota:'Sobre ingreso neto. Empleados e independientes.'},
+    {tit:'Intereses hipotecario',uvt:'100 UVT/mes',cop:'$62.848.800/año',nota:'Solo ADQUISICIÓN de vivienda. Certificado del banco.'},
+    {tit:'Medicina prepagada',uvt:'16 UVT/mes',cop:'$10.051.968/año',nota:'Solo lo que paga el trabajador.'},
+    {tit:'Dependientes',uvt:'32 UVT/mes',cop:'$20.103.936/año',nota:'Cónyuge sin ingresos, hijos <18, hijos hasta 23 con estudios.'},
+    {tit:'AFC + Pensión Voluntaria',uvt:'30% ingreso, máx 3.800 UVT',cop:'$199.021.200',nota:'⚠️ Dentro del 40% global. Si ya lo llenaste, el exceso no sirve.'},
+  ];
+  items.forEach(function(it){
+    html+='<div class="card static" style="margin:0 0 8px">'+
+      '<div style="font-size:13px;font-weight:600;margin-bottom:6px">'+it.tit+'</div>'+
+      '<div class="nrow"><span class="nl">'+it.uvt+'</span><span class="nv">'+it.cop+'</span></div>'+
+      '<div style="font-size:11px;color:var(--tx2);margin-top:6px;background:var(--surf2);padding:8px;border-radius:8px">'+it.nota+'</div></div>';
+  });
+  
+  html+='<div style="font-size:12px;font-weight:600;margin:16px 0 10px">¿QUÉ HACER CON EXCESOS?</div>';
+  var recs=[
+    {ico:'🏦',tit:'AFC para el siguiente año',det:'Si superaste el tope, planea los aportes para el próximo año desde enero.'},
+    {ico:'🏠',tit:'Evalúa crédito hipotecario',det:'Si paga arriendo, un crédito de vivienda le permitiría deducir hasta $62.8M en intereses.'},
+    {ico:'👨‍👩‍👧',tit:'Registra dependientes',det:'Muchos tienen hijos universitarios o cónyuge sin ingresos y no saben que aplican. Hasta $20M/año.'},
+    {ico:'⚠️',tit:'NO incluyas AFC/PV sin efecto',det:'Si el tope ya está copado, NO declares AFC o pensión voluntaria. Declararlos sin efecto puede crear problemas al retirarlos.'},
+  ];
+  recs.forEach(function(r){
+    html+='<div style="display:flex;gap:10px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px;margin-bottom:8px">'+
+      '<div style="font-size:20px">'+r.ico+'</div>'+
+      '<div><div style="font-size:13px;font-weight:500;margin-bottom:3px">'+r.tit+'</div>'+
+      '<div style="font-size:11px;color:var(--tx2);line-height:1.5">'+r.det+'</div></div></div>';
+  });
+  
+  html+='<div style="font-size:12px;font-weight:600;margin:16px 0 10px">OBLIGACIÓN DE DECLARAR</div>';
+  html+='<div class="card static"><div style="font-size:11px;color:var(--tx2);margin-bottom:8px">Si supera AL MENOS UNO:</div>'+
+    '<div class="nrow"><span class="nl">Ingresos brutos</span><span class="nv" style="color:var(--red)">≥ $69.718.600</span></div>'+
+    '<div class="nrow"><span class="nl">Patrimonio a dic 31</span><span class="nv" style="color:var(--red)">≥ $224.208.000</span></div>'+
+    '<div class="nrow"><span class="nl">Compras / consumos</span><span class="nv" style="color:var(--red)">≥ $69.718.600</span></div>'+
+    '<div class="nrow"><span class="nl">Consignaciones bancarias</span><span class="nv" style="color:var(--red)">≥ $69.718.600</span></div></div>';
+  
+  html+='</div>';
+  document.getElementById('s-renta').innerHTML=html;
+}
+
+// ===== ESTATUTO TRIBUTARIO =====
+function renderET(){
+  var html='<div class="ph"><h1>Estatuto Tributario</h1><p>Artículos clave explicados simple</p></div>';
+  
+  var arts=[
+    {tit:'Retención en la Fuente',items:[
+      {art:'Art. 392',tema:'Retención sobre salarios',txt:'Todo empleador debe retener a empleados cuyo salario supere ciertos topes. <strong>Tarifa progresiva</strong> según tabla UVT. La retención es un <strong>anticipo de renta</strong>, no un impuesto aparte.'},
+      {art:'Art. 392-1',tema:'Retención sobre honorarios',txt:'Los independientes tienen retención del <strong>10% o 11%</strong> según si son declarantes o no. Esta retención se descuenta en la declaración de renta.'},
+      {art:'Art. 401',tema:'Base mínima de retención',txt:'No se retiene sobre pagos menores a <strong>27 UVT</strong> ($1.414.098 en 2026) por concepto. Esto aplica a honorarios, servicios y arrendamientos.'},
+    ]},
+    {tit:'IVA',items:[
+      {art:'Art. 420',tema:'Hecho generador del IVA',txt:'El IVA se causa en la <strong>venta de bienes</strong>, <strong>prestación de servicios</strong> en Colombia, e <strong>importaciones</strong>. No todos los bienes/servicios causan IVA (hay exentos y excluidos).'},
+      {art:'Art. 437',tema:'Bienes exentos vs excluidos',txt:'<strong>Exentos:</strong> tarifa 0%, genera derecho a devolución de IVA pagado en compras. <strong>Excluidos:</strong> no causan IVA, no devuelven IVA de compras. Ejemplo: arroz excluido, libros exentos.'},
+      {art:'Art. 600',tema:'Declaración de IVA',txt:'Los responsables de IVA deben presentar declaración <strong>bimestral, cuatrimestral o anual</strong> según ingresos. El IVA se paga junto con la declaración.'},
+    ]},
+    {tit:'Renta',items:[
+      {art:'Art. 206 num.10',tema:'Renta exenta del 25%',txt:'Empleados e independientes pueden declarar <strong>exento el 25%</strong> del ingreso neto laboral o de honorarios, hasta <strong>790 UVT/año</strong> ($41.375.460 en 2026). Clave para bajar la renta.'},
+      {art:'Art. 332',tema:'Ingresos no constitutivos de renta',txt:'Los aportes obligatorios a <strong>salud y pensión</strong> NO son renta gravable. Se restan ANTES de calcular el 40% de deducciones. Esto es crucial para no confundirlos con deducciones.'},
+      {art:'Art. 241',tema:'Límite global de deducciones',txt:'Las rentas exentas + deducciones NO pueden superar el <strong>40% del ingreso neto</strong>, ni <strong>1.340 UVT</strong> ($70.181.160 en 2026). Este tope es implacable.'},
+    ]},
+    {tit:'Sanciones',items:[
+      {art:'Art. 641',tema:'Sanción por extemporaneidad',txt:'Presentar declaración tarde: <strong>5% del impuesto por cada mes de retardo</strong>, hasta el 100%. Mínimo 10 UVT ($523.740 en 2026). Mejor presentar tarde que nunca.'},
+      {art:'Art. 640',tema:'Sanción por no declarar',txt:'No presentar declaración pudiendo hacerlo: el <strong>20% de los ingresos brutos</strong> o el doble del valor de las consignaciones, lo que sea mayor. Esta es brutal. <strong>Siempre es mejor declarar aunque sea en cero.</strong>'},
+      {art:'Art. 634',tema:'Sanción por corrección',txt:'Corregir la declaración tiene sanción del <strong>10% de la diferencia</strong> si aumenta el impuesto. Por eso hay que declarar bien desde el principio.'},
+    ]},
+  ];
+  
+  arts.forEach(function(sec){
+    html+='<div class="acc-header" onclick="toggleAcc(this)"><div class="acc-title">'+sec.tit+'</div><div class="acc-arrow">›</div></div>';
+    html+='<div class="acc-body">';
+    sec.items.forEach(function(it){
+      html+='<div style="background:var(--surf);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px;margin-bottom:8px">'+
+        '<div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:4px">'+it.art+'</div>'+
+        '<div style="font-size:13px;font-weight:600;margin-bottom:6px">'+it.tema+'</div>'+
+        '<div style="font-size:12px;color:var(--tx2);line-height:1.6">'+it.txt+'</div></div>';
+    });
+    html+='</div>';
+  });
+  
+  document.getElementById('s-et').innerHTML=html;
+}
+
+function toggleAcc(el){
+  var body=el.nextElementSibling;
+  var arrow=el.querySelector('.acc-arrow');
+  body.classList.toggle('on');
+  arrow.classList.toggle('open');
+}
+
+// ===== INFORMACIÓN EXÓGENA =====
+function renderExog(){
+  var html='<div class="ph"><h1>Información Exógena</h1><p>Formatos, topes y cómo evitar errores</p></div><div style="padding:0 16px">';
+  
+  html+='<div class="ibox"><p><strong>Reporta anualmente a la DIAN</strong> las operaciones del año anterior. Plazo: marzo-abril del año siguiente.</p></div>';
+  
+  html+='<div style="font-size:12px;font-weight:600;margin:16px 0 10px">¿QUIÉN ESTÁ OBLIGADO?</div>';
+  html+='<div class="card static"><div style="font-size:13px;font-weight:600;margin-bottom:8px">Obligados a reportar exógena en 2026 (año gravable 2025):</div>'+
+    '<div class="nrow"><span class="nl">Ingresos brutos ≥</span><span class="nv" style="color:var(--red)">500 millones</span></div>'+
+    '<div class="nrow"><span class="nl">Patrimonio bruto ≥</span><span class="nv" style="color:var(--red)">$100 millones</span></div>'+
+    '<div style="font-size:11px;color:var(--tx3);margin-top:8px">Si cumples AL MENOS UNO de estos topes, estás obligado. Los topes pueden cambiar cada año por resolución DIAN.</div></div>';
+  
+  html+='<div style="font-size:12px;font-weight:600;margin:16px 0 10px">FORMATOS PRINCIPALES</div>';
+  
+  var fmts=[
+    {cod:'1001',nom:'Pagos y retenciones',desc:'Todos los pagos a terceros > 1 millón y las retenciones practicadas. <strong>El más importante.</strong> Incluye proveedores, empleados, honorarios, arrendamientos.'},
+    {cod:'1007',nom:'Ingresos recibidos',desc:'Todos los ingresos del año, discriminados por cliente. Si un cliente te pagó > 1 millón en el año, lo reportas aquí.'},
+    {cod:'1008',nom:'Cuentas bancarias',desc:'Todas las cuentas que tuviste abiertas durante el año, aunque sea un solo día. Incluye ahorros, corrientes, CDTs.'},
+    {cod:'1009',nom:'Inversiones en acciones',desc:'Si tienes participación en otras sociedades. Reportas el % de participación y el valor patrimonial.'},
+    {cod:'1010',nom:'Pasivos',desc:'Deudas vigentes a diciembre 31. Créditos bancarios, proveedores, obligaciones financieras.'},
+    {cod:'1011',nom:'Activos fijos',desc:'Inmuebles, vehículos, maquinaria. Con fecha de compra, valor histórico y depreciación acumulada.'},
+    {cod:'1012',nom:'Ingresos sin retención',desc:'Ingresos donde NO te practicaron retención porque el pagador no es agente retenedor.'},
+    {cod:'1647',nom:'Consolidado conciliación fiscal',desc:'Para personas jurídicas. Concilia la utilidad contable vs la renta líquida gravable.'},
+  ];
+  
+  fmts.forEach(function(f){
+    html+='<div class="card static" style="margin:0 0 8px">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+      '<span class="tag b">'+f.cod+'</span>'+
+      '<span style="font-size:13px;font-weight:600">'+f.nom+'</span></div>'+
+      '<div style="font-size:12px;color:var(--tx2);line-height:1.6">'+f.desc+'</div></div>';
+  });
+  
+  html+='<div style="font-size:12px;font-weight:600;margin:16px 0 10px">ERRORES COMUNES Y CÓMO PREVENIRLOS</div>';
+  
+  var errs=[
+    {err:'Duplicar registros',prev:'Valida que cada tercero (NIT) aparezca UNA SOLA VEZ por concepto en el formato. Si un proveedor tuvo 10 facturas, se reporta el TOTAL en una sola línea, no 10 líneas.'},
+    {err:'Reportar sin superar topes',prev:'Revisa los topes mínimos de cada formato. En 1001 y 1007, solo se reportan terceros que superaron $1 millón en el año. Reportar todo genera archivo gigante y errores.'},
+    {err:'Errores en NITs',prev:'El NIT debe ser numérico sin puntos ni guiones, con dígito de verificación. Valida todos los NITs antes de subir. Un NIT malo = rechazo del formato completo.'},
+    {err:'Desconectar formatos',prev:'Los formatos se cruzan entre sí. El total de ingresos en 1007 debe cuadrar con tu declaración de renta. Los pagos en 1001 deben cuadrar con tus gastos. La DIAN cruza TODO.'},
+    {err:'Olvidar cuentas cerradas',prev:'En formato 1008 se reportan TODAS las cuentas que tuviste abiertas en el año, aunque las hayas cerrado. Pide extracto del 1 de enero si cerraste la cuenta en febrero.'},
+    {err:'Presentar fuera de plazo',prev:'El plazo es firme. Presentar tarde tiene sanción desde 1% de los ingresos brutos ($5M si reportaste $500M). <strong>Prepara desde enero, no esperes a marzo.</strong>'},
+  ];
+  
+  errs.forEach(function(e){
+    html+='<div style="background:var(--surf);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px;margin-bottom:8px">'+
+      '<div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:4px">❌ '+e.err+'</div>'+
+      '<div style="font-size:12px;color:var(--tx2);line-height:1.6"><strong style="color:var(--green)">✓ Prevención:</strong> '+e.prev+'</div></div>';
+  });
+  
+  html+='<div class="wbox" style="margin-top:16px"><p><strong>Consejo final:</strong> La exógena es el reporte más exigente de la DIAN. Dedica tiempo, valida todo, y usa el prevalidador DIAN antes de enviar. Un error puede costarte una sanción brutal.</p></div>';
+  
+  html+='</div>';
+  document.getElementById('s-exog').innerHTML=html;
+}
+
+// ===== INIT =====
+dbLoad();
+renderHome();
+</script>
+</body>
+</html>
+
